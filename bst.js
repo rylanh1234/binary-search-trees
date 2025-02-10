@@ -16,7 +16,7 @@ function buildTree(array) {
     // create new array without duplicates and then sort it in ascending order
     const uniqueArray = [];
     array.forEach(element => {
-        if (!array.includes(element)) {
+        if (!uniqueArray.includes(element)) {
             uniqueArray.push(element);
         }
     });
@@ -50,42 +50,57 @@ function splitNode(node, array) {
         [lowerArray, upperArray] = [array.slice(0, mid), array.slice(mid)];
 
         // for left child
-        const { lowerMedianIdx, lowerMedian } = findMedian(lowerArray);
-        const lowerNode = node.leftNode;
-        lowerNode.data = lowerMedian;
-        lowerArray.splice(lowerMedianIdx, 1);
-        splitNode(lowerNode, lowerArray);
+        // use aliasing to rename to lower and upper
+        const { medianIdx: lowerMedianIdx, median: lowerMedian } = findMedian(lowerArray);
+        const newLowerNode = new Node();
+        newLowerNode.data = lowerMedian;
+        node.leftNode = newLowerNode;
+        // create a new array that can be spliced and then used for next split
+        const newLowerArray = lowerArray;
+        newLowerArray.splice(lowerMedianIdx, 1);
 
         // for right child
-        const { uppererMedianIdx, upperMedian } = findMedian(upperArray);
-        const upperNode = node.rightNode;        
-        upperNode.data = upperMedian;
-        upperArray.splice(uppererMedianIdx, 1);
-        splitNode(upperNode, upperArray);
+        const { medianIdx: upperMedianIdx, median: upperMedian } = findMedian(upperArray);
+        const newUpperNode = new Node();
+        newUpperNode.data = upperMedian;
+        node.rightNode = newUpperNode;
+        const newUpperArray = upperArray;
+        newUpperArray.splice(upperMedianIdx, 1);
+
+        splitNode(newLowerNode, newLowerArray);
+        splitNode(newUpperNode, newUpperArray);
     }
 
     else if (array.length === 1) {
         if (array[0] > node.data) {
-            node.rightNode.data = array[0];
+            const newUpperNode = new Node();
+            newUpperNode.data = array[0];
+            node.rightNode = newUpperNode;
         }
         else {
-            node.leftNode.data = array[0];
+            const newLowerNode = new Node();
+            newLowerNode.data = array[0];
+            node.leftNode = newLowerNode;
         }
-        array.splice(0,1);
+        array.splice(0, 1);
     }
 }
 
-function prettyPrint() {
-    const prettyPrint = (node, prefix = "", isLeft = true) => {
-        if (node === null) {
-            return;
-        }
-        if (node.right !== null) {
-            prettyPrint(node.right, `${prefix}${isLeft ? "│   " : "    "}`, false);
-        }
-        console.log(`${prefix}${isLeft ? "└── " : "┌── "}${node.data}`);
-        if (node.left !== null) {
-            prettyPrint(node.left, `${prefix}${isLeft ? "    " : "│   "}`, true);
-        }
-    };
-}
+const prettyPrint = (node, prefix = "", isLeft = true) => {
+    if (node === null) {
+        return;
+    }
+    if (node.rightNode !== null) {
+        prettyPrint(node.rightNode, `${prefix}${isLeft ? "│   " : "    "}`, false);
+    }
+    console.log(`${prefix}${isLeft ? "└── " : "┌── "}${node.data}`);
+    if (node.leftNode !== null) {
+        prettyPrint(node.leftNode, `${prefix}${isLeft ? "    " : "│   "}`, true);
+    }
+};
+
+
+const testArray = [1, 7, 4, 23, 8, 9, 4, 3, 5, 7, 9, 67, 6345, 324];
+const testTree = Tree(testArray);
+// console.log(testTree)
+prettyPrint(testTree.root);
