@@ -8,7 +8,37 @@ function Node() {
 
 function Tree(array) {
     return {
-        root: buildTree(array)
+        root: buildTree(array),
+
+        insert(value) {
+            const newNode = new Node();
+            newNode.data = value;
+            let current = this.root;
+            // traverse tree until an empty slot (null) where value is inserted
+            while (current) {
+                if (value > current.data) {
+                    if (!current.rightNode) {
+                        current.rightNode = newNode;
+                        break;
+                    }
+                    current = current.rightNode;
+                }
+                else if (value < current.data) {
+                    if (!current.leftNode) {
+                        current.leftNode = newNode;
+                        break;
+                    }
+                    current = current.leftNode;
+                }
+                else {
+                    return "Duplicate or invalid values cannot be inserted";
+                }
+            }
+        },
+        
+        deleteItem(value) {
+            
+        }
     };
 }
 
@@ -102,5 +132,5 @@ const prettyPrint = (node, prefix = "", isLeft = true) => {
 
 const testArray = [1, 7, 4, 23, 8, 9, 4, 3, 5, 7, 9, 67, 6345, 324];
 const testTree = Tree(testArray);
-// console.log(testTree)
+testTree.insert(9000);
 prettyPrint(testTree.root);
