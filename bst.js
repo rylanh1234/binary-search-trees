@@ -35,9 +35,61 @@ function Tree(array) {
                 }
             }
         },
-        
+
         deleteItem(value) {
-            
+            let current = this.root;
+            if (value !== current.data) {
+                while (current) {
+                    if (value > current.data) {
+                        if (value === current.rightNode.data) {
+                            // no children
+                            if (!current.rightNode.leftNode && !current.rightNode.rightNode) {
+                                current.rightNode = null;
+                            }
+                            // one child
+                            else if (!current.rightNode.leftNode) {
+                                current.rightNode = current.rightNode.rightNode;
+                            }
+                            else if (!current.rightNode.rightNode) {
+                                current.rightNode = current.rightNode.leftNode;
+                            }
+                            // two children
+                            // find smallest in right side
+                            else if (current.leftNode && current.rightNode) {
+                                while (current.rightNode.rightNode.leftNode) {
+                                    current.rightNode.rightNode = current.rightNode.rightNode.leftNode;
+                                }
+                                current.rightNode = current.rightNode.rightNode;
+                            }
+                            break;
+                        }
+                        current = current.rightNode;
+                    }
+                    else if (value < current.data) {
+                        if (value === current.leftNode.data) {
+                            // no children
+                            if (!current.leftNode.leftNode && !current.leftNode.rightNode) {
+                                current.leftNode = null;
+                            }
+                            // one child
+                            else if (!current.leftNode.leftNode) {
+                                current.leftNode = current.leftNode.rightNode;
+                            }
+                            else if (!current.leftNode.rightNode) {
+                                current.leftNode = current.leftNode.leftNode;
+                            }
+                            else if (current.leftNode && current.rightNode) {
+                                while (current.leftNode.rightNode.leftNode) {
+                                    current.rightNode.rightNode = current.rightNode.rightNode.leftNode;
+                                }
+                                current.leftNode = current.leftNode.rightNode;
+                            }
+                            break;
+                        }
+                        current = current.leftNode;
+                    }
+                }
+            }
         }
     };
 }
@@ -133,4 +185,5 @@ const prettyPrint = (node, prefix = "", isLeft = true) => {
 const testArray = [1, 7, 4, 23, 8, 9, 4, 3, 5, 7, 9, 67, 6345, 324];
 const testTree = Tree(testArray);
 testTree.insert(9000);
+testTree.deleteItem(8);
 prettyPrint(testTree.root);
