@@ -40,7 +40,7 @@ function Tree(array) {
             let current = this.root;
             if (value !== current.data) {
                 while (current) {
-                    if (value > current.data) {
+                    if (value > current.data && current.rightNode) {
                         if (value === current.rightNode.data) {
                             // no children
                             if (!current.rightNode.leftNode && !current.rightNode.rightNode) {
@@ -70,7 +70,7 @@ function Tree(array) {
                         }
                         current = current.rightNode;
                     }
-                    else if (value < current.data) {
+                    else if (value < current.data && current.leftNode) {
                         if (value === current.leftNode.data) {
                             // no children
                             if (!current.leftNode.leftNode && !current.leftNode.rightNode) {
@@ -98,6 +98,11 @@ function Tree(array) {
                             break;
                         }
                         current = current.leftNode;
+                    }
+                    // value does not exist in tree
+                    else {
+                        current = null;
+                        console.log("Value does not exist in tree");
                     }
                 }
             }
@@ -222,6 +227,5 @@ const prettyPrint = (node, prefix = "", isLeft = true) => {
 const testArray = [1, 7, 4, 23, 8, 9, 4, 3, 5, 7, 9, 67, 6345, 324];
 const testTree = Tree(testArray);
 testTree.insert(9000);
-testTree.deleteItem(67);
+testTree.deleteItem(8);
 prettyPrint(testTree.root);
-// value doesnt exist
