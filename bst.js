@@ -55,11 +55,16 @@ function Tree(array) {
                             }
                             // two children
                             // find smallest in right side
-                            else if (current.leftNode && current.rightNode) {
-                                while (current.rightNode.rightNode.leftNode) {
-                                    current.rightNode.rightNode = current.rightNode.rightNode.leftNode;
+                            else if (current.rightNode.leftNode && current.rightNode.rightNode) {
+                                const deleteValue = current.rightNode;
+                                current = current.rightNode.rightNode;
+                                while (current.leftNode) {
+                                    current = current.leftNode;
                                 }
-                                current.rightNode = current.rightNode.rightNode;
+                                // remove smallest
+                                this.deleteItem(current.data)
+                                // smallest takes the deleted item's place
+                                deleteValue.data = current.data;
                             }
                             break;
                         }
@@ -78,16 +83,48 @@ function Tree(array) {
                             else if (!current.leftNode.rightNode) {
                                 current.leftNode = current.leftNode.leftNode;
                             }
-                            else if (current.leftNode && current.rightNode) {
-                                while (current.leftNode.rightNode.leftNode) {
-                                    current.rightNode.rightNode = current.rightNode.rightNode.leftNode;
+                            // two children
+                            else if (current.leftNode.leftNode && current.leftNode.rightNode) {
+                                const deleteValue = current.leftNode;
+                                current = current.leftNode.rightNode;
+                                while (current.leftNode) {
+                                    current = current.leftNode;
                                 }
-                                current.leftNode = current.leftNode.rightNode;
+                                // remove smallest
+                                this.deleteItem(current.data)
+                                // smallest takes the deleted item's place
+                                deleteValue.data = current.data;
                             }
                             break;
                         }
                         current = current.leftNode;
                     }
+                }
+            }
+            else {
+                // if deleted value is root
+                // no children
+                if (!current.leftNode && !current.rightNode) {
+                    this.root = null;
+                }
+                // one child
+                else if (!current.leftNode) {
+                    this.root = current.rightNode;
+                }
+                else if (!current.rightNode) {
+                    this.root = current.leftNode;
+                }
+                // two children
+                // find smallest in right side
+                else if (current.leftNode && current.rightNode) {
+                    current = current.rightNode;
+                    while (current.leftNode) {
+                        current = current.leftNode;
+                    }
+                    // remove smallest
+                    this.deleteItem(current.data);
+                    // smallest takes the deleted item's place
+                    this.root.data = current.data;
                 }
             }
         }
@@ -185,5 +222,6 @@ const prettyPrint = (node, prefix = "", isLeft = true) => {
 const testArray = [1, 7, 4, 23, 8, 9, 4, 3, 5, 7, 9, 67, 6345, 324];
 const testTree = Tree(testArray);
 testTree.insert(9000);
-testTree.deleteItem(8);
+testTree.deleteItem(67);
 prettyPrint(testTree.root);
+// value doesnt exist
