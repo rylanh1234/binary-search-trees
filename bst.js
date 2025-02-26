@@ -132,6 +132,37 @@ function Tree(array) {
                     this.root.data = current.data;
                 }
             }
+        },
+        find(value) {
+            let current = this.root;
+            if (current.data === value) {
+                return current;
+            }
+            while (current) {
+                if (value > current.data) {
+                    if (current.rightNode) {
+                        current = current.rightNode;
+                    }
+                    else {
+                        current = null;
+                    }
+                    if (current && current.data === value) {
+                        return current;
+                    }
+                }
+                else if (value < current.data) {
+                    if (current.leftNode) {
+                        current = current.leftNode;
+                    }
+                    else {
+                        current = null;
+                    }
+                    if (current && current.data === value) {
+                        return current;
+                    }
+                }
+            }
+            return "Value not found in tree";
         }
     };
 }
@@ -228,4 +259,10 @@ const testArray = [1, 7, 4, 23, 8, 9, 4, 3, 5, 7, 9, 67, 6345, 324];
 const testTree = Tree(testArray);
 testTree.insert(9000);
 testTree.deleteItem(8);
+console.log(testTree.find(67));
 prettyPrint(testTree.root);
+
+// todo
+// levelOrder(callback), inOrder(callback), preOrder(callback), postOrder(callback)
+// height(node), depth(node)
+// isBalanced(), rebalance()
